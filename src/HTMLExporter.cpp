@@ -103,13 +103,15 @@ bool HTMLExporter::exportData(ExportData * ed) {
 	StyleData * currentStyle, * defaultStyle;
 	defaultStyle = (ed->csd->styles)+STYLE_DEFAULT;
 
-	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "span {\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "body {\r\n");
 	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-family: '%s';\r\n", defaultStyle->fontString);
 	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-size: %0dpt;\r\n", defaultStyle->size);
 	if (defaultStyle->bold)		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-weight: bold;\r\n");
 	if (defaultStyle->italic)	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-style: italic;\r\n");
-	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (defaultStyle->fgColor>>0)&0xFF, (defaultStyle->fgColor>>8)&0xFF, (defaultStyle->fgColor>>16)&0xFF);
+	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (defaultStyle->fgColor >> 0) & 0xFF, (defaultStyle->fgColor >> 8) & 0xFF, (defaultStyle->fgColor >> 16) & 0xFF);
 	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "\tbackground: #%02X%02X%02X;\r\n", (defaultStyle->bgColor >> 0) & 0xFF, (defaultStyle->bgColor >> 8) & 0xFF, (defaultStyle->bgColor >> 16) & 0xFF);
+	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "\twhite-space: pre;\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "\tline-height: 1;\r\n");
 	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "}\r\n");
 
 	for(int i = 0; i < NRSTYLES; i++) {

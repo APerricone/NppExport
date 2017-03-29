@@ -481,6 +481,7 @@ void exportHTML(bool isClipboard, HANDLE exportFile) {
 		GlobalUnlock(ed.hBuffer);
 		GlobalFree(ed.hBuffer);
 	} else {
+		ed.hBuffer = GlobalReAlloc(ed.hBuffer, ed.bufferSize , 0);
 		HANDLE clipHandle = SetClipboardData(htmlexp.getClipboardID(), ed.hBuffer);
 		if (!clipHandle) {
 			GlobalFree(ed.hBuffer);
@@ -512,6 +513,7 @@ void exportRTF(bool isClipboard, HANDLE exportFile) {
 		GlobalUnlock(ed.hBuffer);
 		GlobalFree(ed.hBuffer);
 	} else {
+		ed.hBuffer = GlobalReAlloc(ed.hBuffer, ed.bufferSize , 0);
 		HANDLE clipHandle = SetClipboardData(rtfexp.getClipboardID(), ed.hBuffer);
 		if (!clipHandle) {
 			GlobalFree(ed.hBuffer);
@@ -542,6 +544,7 @@ void exportTXT(bool isClipboard, HANDLE exportFile) {
 		GlobalUnlock(ed.hBuffer);
 		GlobalFree(ed.hBuffer);
 	} else {
+		ed.hBuffer = GlobalReAlloc(ed.hBuffer, ed.bufferSize , 0);
 		HANDLE clipHandle = SetClipboardData(txtexp.getClipboardID(), ed.hBuffer);
 		if (!clipHandle) {
 			GlobalFree(ed.hBuffer);

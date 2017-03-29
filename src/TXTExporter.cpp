@@ -30,7 +30,8 @@ bool TXTExporter::exportData(ExportData * ed) {
 
 	
 //-------Dump text to TXT
-	for(int i = 0; i < ed->csd->nrChars; i++) {
+	int i;
+	for(i = 0; i < ed->csd->nrChars; i++) {
 		clipbuffer[i] = buffer[(i*2)];
 	}
 

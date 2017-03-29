@@ -66,50 +66,51 @@ bool HTMLExporter::exportData(ExportData * ed) {
 
 	//add CF_HTML header if needed, return later to fill in the blanks
 	if (addHeader) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "Version:0.9\r\nStartHTML:0000000105\r\nEndHTML:0000000201\r\nStartFragment:0000000156\r\nEndFragment:0000000165\r\n");
+		currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "Version:0.9\r\nStartHTML:0000000105\r\nEndHTML:0000000201\r\nStartFragment:0000000156\r\nEndFragment:0000000165\r\n");
 	}
 	//end CF_HTML header
 
 	//begin building context
 	//proper doctype to pass validation, just because it looks good
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, 
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, 
 	"<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd\">"
 	"\r\n");
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<html>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<html>\r\n");
 
 	//HACK!, this shouldn't belong here at <head>, but some programs refuse to read the CSS data provided, resulting in ugly text
 	//Even still it sometimes gets ignored
 	//add StartFragment if doing CF_HTML
 	if (addHeader) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<!--StartFragment-->\r\n");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<!--StartFragment-->\r\n");
 	}
 	startFragment = currentBufferOffset;
 	//end StartFragment
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<head>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<head>\r\n");
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<META http-equiv=Content-Type content=\"text/html; charset=");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<META http-equiv=Content-Type content=\"text/html; charset=");
 	if (ed->csd->currentCodePage == SC_CP_UTF8) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "UTF-8");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "UTF-8");
 	} else {
-		//currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "iso-8859-1");
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "windows-1252");
+		//currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "iso-8859-1");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "windows-1252");
 	}
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\">\r\n");
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<title>Exported from Notepad++</title>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\">\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<title>Exported from Notepad++</title>\r\n");
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<style type=\"text/css\">\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<style type=\"text/css\">\r\n");
 
 	StyleData * currentStyle, * defaultStyle;
 	defaultStyle = (ed->csd->styles)+STYLE_DEFAULT;
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "span {\r\n");
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-family: '%s';\r\n", defaultStyle->fontString);
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-size: %0dpt;\r\n", defaultStyle->size);
-	if (defaultStyle->bold)		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-weight: bold;\r\n");
-	if (defaultStyle->italic)	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-style: italic;\r\n");
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (defaultStyle->fgColor>>0)&0xFF, (defaultStyle->fgColor>>8)&0xFF, (defaultStyle->fgColor>>16)&0xFF);
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "}\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "span {\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-family: '%s';\r\n", defaultStyle->fontString);
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-size: %0dpt;\r\n", defaultStyle->size);
+	if (defaultStyle->bold)		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-weight: bold;\r\n");
+	if (defaultStyle->italic)	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-style: italic;\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (defaultStyle->fgColor>>0)&0xFF, (defaultStyle->fgColor>>8)&0xFF, (defaultStyle->fgColor>>16)&0xFF);
+	currentBufferOffset += sprintf_s(clipbuffer + currentBufferOffset, totalBytesNeeded - currentBufferOffset, "\tbackground: #%02X%02X%02X;\r\n", (defaultStyle->bgColor >> 0) & 0xFF, (defaultStyle->bgColor >> 8) & 0xFF, (defaultStyle->bgColor >> 16) & 0xFF);
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "}\r\n");
 
 	for(int i = 0; i < NRSTYLES; i++) {
 		if (i == STYLE_DEFAULT)
@@ -117,48 +118,48 @@ bool HTMLExporter::exportData(ExportData * ed) {
 
 		currentStyle = (ed->csd->styles)+i;
 		if (ed->csd->usedStyles[i] == true) {
-			currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, ".sc%d {\r\n", i);
+			currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, ".sc%d {\r\n", i);
 			if (lstrcmpiA(currentStyle->fontString, defaultStyle->fontString))	//this is forcefully set to ANSI, this part of the plugin doesnt need Unicode
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-family: '%s';\r\n", currentStyle->fontString);
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-family: '%s';\r\n", currentStyle->fontString);
 			if (currentStyle->size != defaultStyle->size)
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-size: %0dpt;\r\n", currentStyle->size);
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-size: %0dpt;\r\n", currentStyle->size);
 			if (currentStyle->bold != defaultStyle->bold) {
 				if (currentStyle->bold)
-					currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-weight: bold;\r\n");
+					currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-weight: bold;\r\n");
 				else
-					currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-weight: normal;\r\n");
+					currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-weight: normal;\r\n");
 			}
 			if (currentStyle->italic != defaultStyle->italic) {
 				if (currentStyle->italic)
-					currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-style: italic;\r\n");
+					currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-style: italic;\r\n");
 				else
-					currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tfont-style: normal;\r\n");
+					currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tfont-style: normal;\r\n");
 			}
 			if (currentStyle->underlined)
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\ttext-decoration: underline;\r\n");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\ttext-decoration: underline;\r\n");
 			if (currentStyle->fgColor != defaultStyle->fgColor)
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (currentStyle->fgColor>>0)&0xFF, (currentStyle->fgColor>>8)&0xFF, (currentStyle->fgColor>>16)&0xFF);
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tcolor: #%02X%02X%02X;\r\n", (currentStyle->fgColor>>0)&0xFF, (currentStyle->fgColor>>8)&0xFF, (currentStyle->fgColor>>16)&0xFF);
 			if (currentStyle->bgColor != defaultStyle->bgColor)
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\tbackground: #%02X%02X%02X;\r\n", (currentStyle->bgColor>>0)&0xFF, (currentStyle->bgColor>>8)&0xFF, (currentStyle->bgColor>>16)&0xFF);
-			currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "}\r\n");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\tbackground: #%02X%02X%02X;\r\n", (currentStyle->bgColor>>0)&0xFF, (currentStyle->bgColor>>8)&0xFF, (currentStyle->bgColor>>16)&0xFF);
+			currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "}\r\n");
 		}
 	}
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "</style>\r\n</head>\r\n");
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<body>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "</style>\r\n</head>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<body>\r\n");
 
 	//end building context
 /*
 	//add StartFragment if doing CF_HTML
 	if (addHeader) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<!--StartFragment-->\r\n");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<!--StartFragment-->\r\n");
 	}
 	startFragment = currentBufferOffset;
 	//end StartFragment
-*/
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<div style=\"");
+*//* 
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<div style=\"");
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, 
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, 
 		"float: left; "
 		"white-space: pre; "
 		"line-height: 1; "
@@ -166,13 +167,13 @@ bool HTMLExporter::exportData(ExportData * ed) {
 		(defaultStyle->bgColor>>0)&0xFF, (defaultStyle->bgColor>>8)&0xFF, (defaultStyle->bgColor>>16)&0xFF
 		);
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\">");
-
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\">");
+	*/
 //-------Dump text to HTML
 	char * tabBuffer = new char[ed->csd->tabSize + 1];
 	tabBuffer[0] = 0;
 	for(int i = 0; i < ed->csd->tabSize; i++) {
-		strcat(tabBuffer, " ");
+		strcat_s(tabBuffer, ed->csd->tabSize + 1, " ");
 	}
 
 	int nrCharsSinceLinebreak = -1, nrTabCharsToSkip = 0;
@@ -184,10 +185,10 @@ bool HTMLExporter::exportData(ExportData * ed) {
 		//print new span object if style changes
 		if (buffer[i*2+1] != lastStyle) {
 			if (openSpan) {
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "</span>");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "</span>");
 			}
 			lastStyle = buffer[i*2+1];
-			currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<span class=\"sc%d\">", lastStyle);
+			currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<span class=\"sc%d\">", lastStyle);
 			openSpan = true;
 		}
 
@@ -199,60 +200,60 @@ bool HTMLExporter::exportData(ExportData * ed) {
 				if (buffer[(i*2)+2] == '\n')
 					break;
 			case '\n':
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "\r\n");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "\r\n");
 				nrCharsSinceLinebreak = -1;
 				break;
 			case '<':
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "&lt;");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "&lt;");
 				break;
 			case '>':
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "&gt;");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "&gt;");
 				break;
 			case '&':
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "&amp;");
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "&amp;");
 				break;
 			case '\t':
 				nrTabCharsToSkip = nrCharsSinceLinebreak%(ed->csd->tabSize);
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "%s", tabBuffer + (nrTabCharsToSkip));
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "%s", tabBuffer + (nrTabCharsToSkip));
 				nrCharsSinceLinebreak += ed->csd->tabSize - nrTabCharsToSkip - 1;
 				break;
 			default:
 				if (currentChar < 0x20)	//ignore control characters
 					break;
-				currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "%c", currentChar);
+				currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "%c", currentChar);
 				break;
 		}
 	}
 
 	if (openSpan) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "</span>");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "</span>");
 	}
 
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "</div>");
+	//currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "</div>");
 
 	delete [] tabBuffer;
 
 	//add EndFragment if doing CF_HTML
 	endFragment = currentBufferOffset;
 	if (addHeader) {
-		currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "<!--EndFragment-->\r\n");
+		currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "<!--EndFragment-->\r\n");
 	}
 	//end EndFragment
 
 	//add closing context
-	currentBufferOffset += sprintf(clipbuffer+currentBufferOffset, "</body>\r\n</html>\r\n");
+	currentBufferOffset += sprintf_s(clipbuffer+currentBufferOffset, totalBytesNeeded- currentBufferOffset, "</body>\r\n</html>\r\n");
 	endHTML = currentBufferOffset;
 
 	//if doing CF_HTML, fill in header data
 	if (addHeader) {
 		char number[11];
-		sprintf(number, "%.10d", startHTML);
+		sprintf_s(number,11, "%.10d", startHTML);
 		memcpy(clipbuffer + 23, number, 10);
-		sprintf(number, "%.10d", endHTML);
+		sprintf_s(number, 11, "%.10d", endHTML);
 		memcpy(clipbuffer + 43, number, 10);
-		sprintf(number, "%.10d", startFragment);
+		sprintf_s(number, 11, "%.10d", startFragment);
 		memcpy(clipbuffer + 69, number, 10);
-		sprintf(number, "%.10d", endFragment);
+		sprintf_s(number, 11, "%.10d", endFragment);
 		memcpy(clipbuffer + 93, number, 10);
 	}
 	//end header

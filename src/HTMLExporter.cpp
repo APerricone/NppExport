@@ -73,6 +73,11 @@ void HTMLExporter::PrepareStyles(CurrentScintillaData* csd, bool isClipboard)
 			len += sprintf_s(buff + len, 1024 - len, "tab-size: %i;%s", csd->tabSize, space);
 			len += sprintf_s(buff + len, 1024 - len, "line-height: normal;%s", space);
 		}
+		if (!isClipboard && len>0) 
+		{
+			buff[len-1]=0;
+			len--;
+		}
 		styles[i] = new char[len+1];
 		strcpy_s(styles[i], len + 1, buff);
 	}

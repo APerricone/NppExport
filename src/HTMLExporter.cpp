@@ -78,13 +78,9 @@ size_t HTMLExporter::WriteHTML(CurrentScintillaData* csd, char *const dest, size
 {
 	size_t len = 0;
 	if (dest)
-	{
 		len += sprintf_s(dest + len, destSize - len, "<html><body style=\"%s\">\r\n", styles[STYLE_DEFAULT]);
-	}
 	else
-	{
 		len += 23 + strlen(styles[STYLE_DEFAULT]);
-	}
 	char lastStyle = -1;
 	char *buffer = csd->dataBuffer;
 	for (int i = 0; i < csd->nrChars; i++)
@@ -136,7 +132,7 @@ size_t HTMLExporter::WriteHTML(CurrentScintillaData* csd, char *const dest, size
 			break;
 		case '\t':
 			if (dest)
-				len += sprintf_s(dest + len, destSize - len, " \t");
+				len += sprintf_s(dest + len, destSize - len, "\t");
 			else
 				len += 1;
 			break;

@@ -73,7 +73,7 @@ void HTMLExporter::PrepareStyles(CurrentScintillaData* csd, bool isClipboard)
 			len += sprintf_s(buff + len, 1024 - len, "tab-size: %i;%s", csd->tabSize, space);
 			len += sprintf_s(buff + len, 1024 - len, "line-height: normal;%s", space);
 		}
-		if (!isClipboard && len>0) 
+		if (len>0) 
 		{
 			buff[len-1]=0;
 			len--;
@@ -87,16 +87,17 @@ size_t HTMLExporter::WriteHTMLClipboard(CurrentScintillaData* csd, char *const d
 {
 	size_t len = 0;
 	if (dest)
-		len += sprintf_s(dest + len, destSize - len, "<html><body style=\"%s\">\r\n", styles[STYLE_DEFAULT]);
+		len += sprintf_s(dest + len, destSize - len, "<html><body><div style=\"%s\">\r\n", styles[STYLE_DEFAULT]);
 	else
-		len += 23 + strlen(styles[STYLE_DEFAULT]);
+		len += 29 + strlen(styles[STYLE_DEFAULT]);
 	char lastStyle = -1;
 	char *buffer = csd->dataBuffer;
+	size_t styleLen = 0;
 	for (int i = 0; i < csd->nrChars; i++)
 	{
 		//print new span object if style changes
 		if (buffer[i * 2 + 1] != lastStyle) {
-			if (lastStyle!=-1)
+			if(styleLen>0)
 			{
 				if (dest)
 					len += sprintf_s(dest + len, destSize - len, "</span>");
@@ -104,13 +105,22 @@ size_t HTMLExporter::WriteHTMLClipboard(CurrentScintillaData* csd, char *const d
 					len += 7;
 			}
 			lastStyle = buffer[i * 2 + 1];
-			if (dest)
-				len += sprintf_s(dest + len, destSize - len, "<span style=\"%s\">", styles[lastStyle]);
+			styleLen = strlen(styles[lastStyle]);
+
+			if(styleLen>0)
+			{
+				if (dest)
+					len += sprintf_s(dest + len, destSize - len, "<span style=\"%s\">", styles[lastStyle]);
+				else
+					len += 15 + styleLen;
+			}
 			else
-				len += 15 + strlen(styles[lastStyle]);
+			{
+			}
 		}
 		//print character, parse special ones
 		char currentChar = buffer[(i * 2)];
+		int nTab;
 		switch (currentChar) {
 		case '\r':
 			if (buffer[(i * 2) + 2] == '\n' || buffer[(i * 2) + 2] == '\r')
@@ -140,10 +150,16 @@ size_t HTMLExporter::WriteHTMLClipboard(CurrentScintillaData* csd, char *const d
 				len += 5;
 			break;
 		case '\t':
+			nTab = csd->tabSize;
+			while (buffer[(i * 2) + 2] == '\t')
+			{
+				nTab += csd->tabSize;
+				i++;
+			}
 			if (dest)
-				len += sprintf_s(dest + len, destSize - len, "\t");
+				len += sprintf_s(dest + len, destSize - len, "</span><span style=\"% smargin-left: %iex;\">", styles[lastStyle],nTab);
 			else
-				len += 1;
+				len += 39 + styleLen +  (nTab < 10 ? 0 : 1) + (nTab < 100 ? 0 : 1) + (nTab < 1000 ? 0 : 1);
 			break;
 		default:
 			if (currentChar < 0x20)	//ignore control characters
@@ -164,11 +180,11 @@ size_t HTMLExporter::WriteHTMLClipboard(CurrentScintillaData* csd, char *const d
 	}
 	if (dest)
 	{
-		len += sprintf_s(dest + len, destSize - len, "</body></html>\r\n");
+		len += sprintf_s(dest + len, destSize - len, "</div></body></html>\r\n");
 	}
 	else
 	{
-		len += 16;
+		len += 22;
 	}
 	return len;
 }
@@ -329,7 +345,7 @@ bool HTMLExporter::exportData(ExportData * ed)
 				"StartHTML:%i\r\n"
 				"EndHTML:%i\r\n"
 				"StartFragment:%i\r\n"
-				"EndFragment:%i\r\n", (int)headerLen, (int)(headerLen + totalHTML), (int)(headerLen + 6), (int)(headerLen + totalHTML - 9));
+				"EndFragment:%i\r\n", (int)headerLen, (int)(headerLen + totalHTML), (int)(headerLen + 6), (int)(headerLen + totalHTML - 10));
 
 	} else
 		totalHTML = WriteHTMLFile(ed->csd, 0, 0);

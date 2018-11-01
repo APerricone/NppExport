@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Inglese (Stati Uniti) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,2,9,0
- PRODUCTVERSION 0,2,9,0
+ FILEVERSION 0,2,9,1
+ PRODUCTVERSION 0,2,9,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,10 +70,10 @@ BEGIN
             VALUE "FileDescription", "Export Plugin for Notepad++, a free (GNU) source code editor"
             VALUE "FileVersion", "0.2.9 Unicode"
             VALUE "InternalName", "Exporter"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2018"
             VALUE "OriginalFilename", "NppExport.dll"
             VALUE "ProductName", "NppExport"
-            VALUE "ProductVersion", "0.2.9.0"
+            VALUE "ProductVersion", "0.2.9.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -82,7 +82,7 @@ BEGIN
     END
 END
 
-#endif    // English (United States) resources
+#endif    // Inglese (Stati Uniti) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
